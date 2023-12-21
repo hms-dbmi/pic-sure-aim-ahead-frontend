@@ -1,0 +1,13 @@
+.DS_Store
+repos/
+cert/
+httpd-docker-logs/
+extra-files/
+.DS_Store
+.settings/
+.project
+.classpath
+target/
+.idea
+*.iml
+/bin/
