@@ -38,8 +38,6 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
          * Example configuration: provide custom not_authorized.hbs template in overrides folder and render it similar manner
          * as login.displayNotAuthorized() function.
          */
-        displayNotAuthorized: function () {
-            $('#main-content').html(HBS.compile(notAuthorizedTemplate)({helpLink:settings.helpLink, login_link:settings.login_link}));
-        }
+        displayNotAuthorized: undefined,
 	};
 });
