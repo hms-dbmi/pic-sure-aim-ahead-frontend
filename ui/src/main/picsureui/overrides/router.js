@@ -1,12 +1,14 @@
-define(["backbone", "underscore", "handlebars", "studyAccess/studyAccess", "picSure/settings", "filter/filterList",
+define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings", "filter/filterList",
         "openPicsure/outputPanel", "picSure/queryBuilder", "text!openPicsure/searchHelpTooltipOpen.hbs", "overrides/outputPanel",
         "search-interface/filter-list-view", "search-interface/search-view", "search-interface/tool-suite-view",
         "search-interface/query-results-view", "api-interface/apiPanelView", "search-interface/filter-model",
         "search-interface/tag-filter-model", "landing/landing", "common/session"],
-    function (BB, _, HBS, studyAccess, settings, filterList,
+    function (Backbone, HBS, studyAccess, settings, filterList,
               outputPanel, queryBuilder, searchHelpTooltipTemplate, output,
               FilterListView, SearchView, ToolSuiteView, queryResultsView,
               ApiPanelView, filterModel, tagFilterModel, landingView, session) {
+        const genomicFilterWarningText = 'Genomic filters will be removed from your query as they are not currently supported in Open Access. Are you sure you would like to proceed to Open Access? \n\nClick OK to proceed to open access or cancel to reutrn to authorized access.';
+
         let createUserSession = function (that, callback, args) {
             let uuid = localStorage.getItem('OPEN_ACCESS_UUID');
             if (uuid) {
@@ -41,6 +43,7 @@ define(["backbone", "underscore", "handlebars", "studyAccess/studyAccess", "picS
 
         let execute = function (callback, args, name) {
             let deferred = $.Deferred();
+
             if (!session.isValid(deferred)) {
                 createUserSession(this, callback, args);
             } else {
@@ -51,66 +54,30 @@ define(["backbone", "underscore", "handlebars", "studyAccess/studyAccess", "picS
             }
         };
 
-        let displayLandingPage = function () {
-            $(".header-btn.active").removeClass('active');
-            $('#main-content').empty();
-            let totalVars = filterModel.get("totalVariables");
-
-            const landing = new landingView({totalVars: totalVars});
-            $('#main-content').append(landing.$el);
-            landing.render();
-        };
-
         let displayDataAccess = function () {
             $(".header-btn.active").removeClass('active');
             $(".header-btn[data-href='/picsureui/dataAccess']").addClass('active');
             $('#main-content').empty();
-
             var studyAccessView = new studyAccess.View();
             $('#main-content').append(studyAccessView.$el);
             studyAccessView.render();
         };
-
-        let displayOpenAccess = function () {
-            sessionStorage.setItem("isOpenAccess", true);
-            BB.pubSub.trigger('destroySearchView');
-
-            $(".header-btn.active").removeClass('active');
-            $(".header-btn[data-href='/picsureui/openAccess#']").addClass('active');
-            $('#main-content').empty();
-            $('#main-content').append(this.layoutTemplate(settings));
-            let toolSuiteView = new ToolSuiteView({
-                el:
-                    $('#tool-suite-panel')
-                , isOpenAccess: true
+        let getGenomicFilters = function () {
+            let genomicFilters = filterModel.get('activeFilters').filter(filter => {
+                return filter.get('type') === 'genomic';
             });
-            toolSuiteView.render();
-
-            const outputPanelView = new outputPanel.View({toolSuiteView: toolSuiteView});
-            const query = queryBuilder.generateQueryNew({}, {}, null, settings.openAccessResourceId);
-            outputPanelView.render();
-            $('#query-results').append(outputPanelView.$el);
-
-            const parsedSess = JSON.parse(sessionStorage.getItem("session"));
-            if (parsedSess.queryTemplate === undefined) {
-                parsedSess.queryTemplate = "{}";
-            }
-
-            const searchView = new SearchView({
-                queryTemplate: JSON.parse(parsedSess.queryTemplate),
-                queryScopes: parsedSess.queryScopes,
-                el: $('#filter-list')
+            return genomicFilters;
+        };
+        let getInvalidActiveFilters = function () {
+            const session = JSON.parse(sessionStorage.getItem("session"));
+            return filterModel.get('activeFilters').filter(filter => {
+                if (filter.get('type') === 'genomic') {
+                    return session.queryScopes && !session.queryScopes.includes('Gene_with_variant');
+                } else {
+                    const filterStudyId = '\\' + filter.get('searchResult').result.metadata.columnmeta_study_id + '\\';
+                    return session.queryScopes && !session.queryScopes.includes(filterStudyId);
+                }
             });
-
-            if ($('#search-results-panel').is(":visible")) {
-                $('#guide-me-button-container').hide();
-            }
-
-            const filterListView = new FilterListView({
-                outputPanelView: outputPanelView,
-                el: $('#filter-list-panel')
-            });
-            filterListView.render();
         };
 
         let displayAPI = function () {
@@ -123,6 +90,16 @@ define(["backbone", "underscore", "handlebars", "studyAccess/studyAccess", "picS
             apiPanelView.render();
         };
 
+        let displayLandingPage = function () {
+            $(".header-btn.active").removeClass('active');
+            $('#main-content').empty();
+            let totalVars = filterModel.get("totalVariables");
+
+            const landing = new landingView({totalVars: totalVars});
+            $('#main-content').append(landing.$el);
+            landing.render();
+        };
+
         return {
             routes: {
                 /**
@@ -132,15 +109,64 @@ define(["backbone", "underscore", "handlebars", "studyAccess/studyAccess", "picS
                  * Ex:
                  * "picsureui/queryBuilder2" : function() { renderQueryBuilder2(); }
                  */
-                "psamaui/login(/)": undefined,
-                "picsureui/login(/)": undefined,
-                "psamaui/logout(/)": undefined,
                 "picsureui/dataAccess": displayDataAccess,
-                "picsureui/openAccess": function () {
-                    displayOpenAccess.call(this);
-                },
                 "picsureui/queryBuilder(/)": function () {
-                    displayOpenAccess.call(this);
+                    sessionStorage.setItem("isOpenAccess", false);
+                    let antiScopes = getInvalidActiveFilters();
+                    if (antiScopes && antiScopes.length > 0) {
+                        if (confirm('Filters on studies you are not authorized to access will be removed as they are not supported in Authorized Access. Are you sure you would like to proceed to Authorized Access?')) {
+                            filterModel.get('activeFilters').remove(antiScopes, {silent: true});
+                            antiScopes.forEach(filter => {
+                                tagFilterModel.removeRequiredTag(filter.get('searchResult').result.metadata.columnmeta_study_id);
+                                tagFilterModel.removeExcludedTag(filter.get('searchResult').result.metadata.columnmeta_study_id);
+                            });
+                        } else {
+                            this.navigate('picsureui/openAccess#', {trigger: true, replace: false});
+                            return;
+                        }
+                    }
+                    Backbone.pubSub.trigger('destroySearchView');
+                    $(".header-btn.active").removeClass('active');
+                    $(".header-btn[data-href='/picsureui/queryBuilder']").addClass('active');
+
+                    $('#main-content').empty();
+                    $('#main-content').append(this.layoutTemplate(settings));
+                    const toolSuiteView = new ToolSuiteView({
+                        el: $('#tool-suite-panel'),
+                        isOpenAccess: false
+                    });
+                    const queryView = new queryResultsView.View({
+                        model: new queryResultsView.Model(),
+                        toolSuiteView: toolSuiteView
+                    });
+
+                    queryView.render();
+                    $('#query-results').append(queryView.$el);
+
+                    const parsedSess = JSON.parse(sessionStorage.getItem("session"));
+
+                    const query = queryBuilder.generateQueryNew({}, {}, JSON.parse(parsedSess.queryTemplate), settings.picSureResourceId);
+
+                    const searchView = new SearchView({
+                        queryTemplate: JSON.parse(parsedSess.queryTemplate),
+                        queryScopes: parsedSess.queryScopes,
+                        el: $('#filter-list')
+                    });
+
+                    $('#studies-list-panel').remove();
+
+                    if ($('#search-results-panel').is(":visible")) {
+                        $('#guide-me-button-container').hide();
+                    }
+
+                    const filterListView = new FilterListView({
+                        outputPanelView: queryView,
+                        el: $('#filter-list-panel')
+                    });
+
+                    filterListView.render();
+
+                    toolSuiteView.render();
                 },
                 "picsureui/api": displayAPI,
                 "picsureui(/)": displayLandingPage,
