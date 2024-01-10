@@ -7,3 +7,4 @@ COPY ui/src/main/psamaui/ /usr/local/apache2/htdocs/picsureui/psamaui/
 
 # Add new Logo
 COPY logo.png /usr/local/apache2/htdocs/picsureui/static/logo.png
+COPY logo.png /usr/local/apache2/htdocs/images/logo.png
