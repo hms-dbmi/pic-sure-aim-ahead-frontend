@@ -41,7 +41,26 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
             });
         };
 
+        let testLogin = function () {
+            $.ajax(
+                {
+                    url: '/psama/okta/authentication',
+                    type: 'GET',
+                    success: function (data) {
+                        // this is a test method I just want to validate if the endpoint is working
+                        console.log(data);
+
+                    },
+                    error: function (data) {
+                        // handle error
+                        console.log(data);
+                    }
+                });
+        };
+
         let execute = function (callback, args, name) {
+            testLogin();
+
             let deferred = $.Deferred();
 
             if (!session.isValid(deferred)) {
