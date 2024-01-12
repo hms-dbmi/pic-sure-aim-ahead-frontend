@@ -73,20 +73,6 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
             }
         };
 
-        let displayDataAccess = function () {
-            $(".header-btn.active").removeClass('active');
-            $(".header-btn[data-href='/picsureui/dataAccess']").addClass('active');
-            $('#main-content').empty();
-            var studyAccessView = new studyAccess.View();
-            $('#main-content').append(studyAccessView.$el);
-            studyAccessView.render();
-        };
-        let getGenomicFilters = function () {
-            let genomicFilters = filterModel.get('activeFilters').filter(filter => {
-                return filter.get('type') === 'genomic';
-            });
-            return genomicFilters;
-        };
         let getInvalidActiveFilters = function () {
             const session = JSON.parse(sessionStorage.getItem("session"));
             return filterModel.get('activeFilters').filter(filter => {
@@ -97,16 +83,6 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
                     return session.queryScopes && !session.queryScopes.includes(filterStudyId);
                 }
             });
-        };
-
-        let displayAPI = function () {
-            $(".header-btn.active").removeClass('active');
-            $(".header-btn[data-href='/picsureui/api']").addClass('active');
-            $('#main-content').empty();
-
-            var apiPanelView = new ApiPanelView({});
-            $('#main-content').append(apiPanelView.$el);
-            apiPanelView.render();
         };
 
         let displayLandingPage = function () {
@@ -128,7 +104,7 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
                  * Ex:
                  * "picsureui/queryBuilder2" : function() { renderQueryBuilder2(); }
                  */
-                "picsureui/dataAccess": displayDataAccess,
+                "picsureui/dataAccess": undefined,
                 "picsureui/queryBuilder(/)": function () {
                     sessionStorage.setItem("isOpenAccess", false);
                     let antiScopes = getInvalidActiveFilters();
@@ -187,7 +163,7 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
 
                     toolSuiteView.render();
                 },
-                "picsureui/api": displayAPI,
+                "picsureui/api": undefined,
                 "picsureui(/)": displayLandingPage,
             },
             defaultAction: displayLandingPage,
