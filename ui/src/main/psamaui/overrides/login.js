@@ -1,5 +1,8 @@
 define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handlebars"], function(settings, notAuthorizedTemplate, HBS){
 	return {
+		showLoginPage : function () {
+			$('#main-content').html("BioDataCatalyst authentication is successful. Processing UserProfile information...");
+		},
 		/*
 		 * This allows you to build any authorization logic you wish.
 		 *
@@ -35,8 +38,6 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
          * Example configuration: provide custom not_authorized.hbs template in overrides folder and render it similar manner
          * as login.displayNotAuthorized() function.
          */
-        displayNotAuthorized: function () {
-            $('#main-content').html(HBS.compile(notAuthorizedTemplate)({helpLink:settings.helpLink}));
-        }
+        displayNotAuthorized: undefined,
 	};
 });
