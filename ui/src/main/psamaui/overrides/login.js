@@ -36,8 +36,6 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                 })
 
             } else {
-                $('#main-content').html("BioDataCatalyst authentication is successful. Processing UserProfile information...");
-
                 redirectToProvider();
             }
         };
