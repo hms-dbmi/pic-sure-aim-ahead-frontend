@@ -1,57 +1,45 @@
-define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handlebars",
-        'util/notification', 'common/session'],
-    function (settings, notAuthorizedTemplate, HBS,
-              notification, session) {
-        function redirectToProvider() {
-            // We don't have a code, so we need to redirect the user to the login page
-            window.location.href = settings.idp_provider_uri + "/user/oauth2/authorize" +
-                "?response_type=code" +
-                "&scope=openid" +
-                "&client_id=" + settings.client_id +
-                "&redirect_uri=" + window.location.protocol
-                + "//" + window.location.hostname
-                + (window.location.port ? ":" + window.location.port : "")
-                + "/picsureui/login/";
-        }
+define(["picSure/settings", "handlebars", 'text!psamaui/overrides/not_authorized.hbs'], function(settings, HBS, notAuthorizedTemplate){
+    return {
+        /*
+         * This allows you to build any authorization logic you wish.
+         *
+         * This should be a function that takes the output of common/searchParser/parseQueryString
+         * as the first argument and calls the second argument(a function) passing either true or
+         * false to indicate successful or failed authorization to access the system.
+         *
+         */
+        authorization : undefined,
+        /*
+         * This allows you to modify the DOM rendered on the login screen.
+         *
+         * For GRIN this implements a hack that hides the Google button because of
+         * a bug in the Auth0 lock that prevents you from showing only enterprise
+         * buttons.
+         *
+         * Since users still need to pass authorization, there is no harm in
+         * keeping the button hidden, since even if someone decided to show it
+         * they couldn't use it to access the system anyway.
+         */
+        postRender: undefined,
 
-        let doLoginFlow = function () {
-            // We will show the loading message if it is defined
-
-            let url = new URL(window.location.href);
-            let code = url.searchParams.get("code");
-
-            if (code) {
-                $('#main-content').html("Authentication is successful. Processing UserProfile information...");
-
-                // We have a code, so we can authenticate the user
-                $.ajax({
-                    url: '/psama/okta/authentication',
-                    type: 'post',
-                    data: JSON.stringify({
-                        code: code
-                    }),
-                    contentType: 'application/json',
-                    success: session.sessionInit,
-                    error: handleAuthenticationError
-                })
-
-            } else {
-                redirectToProvider();
-            }
-        };
-
-        let handleAuthenticationError = function (data) {
-            notification.showFailureMessage("Failed to authenticate with provider. Try again or contact administrator if error persists.")
-            history.pushState({}, "", sessionStorage.not_authorized_url ? sessionStorage.not_authorized_url : "/psamaui/not_authorized?redirection_url=/picsureui");
-        };
-
-        return {
-            authorization: undefined,
-            client_id: settings.client_id,
-            postRender: undefined,
-            displayNotAuthorized: function () {
-                $('#main-content').html(HBS.compile(notAuthorizedTemplate)({helpLink: settings.helpLink}));
-            },
-            showLoginPage: doLoginFlow,
-        };
-    });
+        /*
+		 * This override allows to configure custom not_authorized page for stack.
+		 *
+		 * Example configuration: provide custom not_authorized.hbs template in overrides folder and render it similar manner
+		 * as login.displayNotAuthorized() function.
+		 */
+        displayNotAuthorized: function () {
+            $("#main-content").html(HBS.compile(notAuthorizedTemplate)());
+        },
+        /*
+         * An optional message to display in the main-content div while login is processing. This can be a string
+         * containing html, it will be directly passed to $.html
+         */
+        waitingMessage: undefined,
+        /**
+         * Allows overriding of showing the login page. This function also handles the response from the login page.
+         * See login/login.js for example
+         */
+        showLoginPage: undefined
+    };
+});
