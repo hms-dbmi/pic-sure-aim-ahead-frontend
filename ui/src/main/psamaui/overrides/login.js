@@ -7,7 +7,7 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
             window.location.href = settings.idp_provider_uri + "/user/oauth2/authorize" +
                 "?response_type=code" +
                 "&scope=openid" +
-                "&client_id=" + settings.okta_client_id +
+                "&client_id=" + settings.client_id +
                 "&redirect_uri=" + window.location.protocol
                 + "//" + window.location.hostname
                 + (window.location.port ? ":" + window.location.port : "")
