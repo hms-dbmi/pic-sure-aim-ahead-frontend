@@ -7,71 +7,6 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
               outputPanel, queryBuilder, searchHelpTooltipTemplate, output,
               FilterListView, SearchView, ToolSuiteView, queryResultsView,
               ApiPanelView, filterModel, tagFilterModel, landingView, session) {
-        const genomicFilterWarningText = 'Genomic filters will be removed from your query as they are not currently supported in Open Access. Are you sure you would like to proceed to Open Access? \n\nClick OK to proceed to open access or cancel to reutrn to authorized access.';
-
-        let createUserSession = function (that, callback, args) {
-            let uuid = localStorage.getItem('OPEN_ACCESS_UUID');
-            if (uuid) {
-                uuid = JSON.parse(uuid);
-            }
-
-            $.ajax({
-                url: '/psama/open/authentication',
-                type: 'POST',
-                data: JSON.stringify({
-                    UUID: uuid
-                }),
-                contentType: 'application/json',
-                success: function (data) {
-                    if (data.uuid) {
-                        // we need to set the UUID cookie here, because the backend will not do it for us.
-                        localStorage.setItem('OPEN_ACCESS_UUID', JSON.stringify(data.uuid));
-                    }
-
-                    session.sessionInit(data);
-                    that.renderHeaderAndFooter();
-                    if (callback) {
-                        callback.apply(that, args);
-                    }
-                },
-                error: function (data) {
-                    // handle error
-                    console.log(data);
-                }
-            });
-        };
-
-        let testLogin = function () {
-            $.ajax(
-                {
-                    url: '/psama/okta/authentication',
-                    type: 'GET',
-                    success: function (data) {
-                        // this is a test method I just want to validate if the endpoint is working
-                        console.log(data);
-
-                    },
-                    error: function (data) {
-                        // handle error
-                        console.log(data);
-                    }
-                });
-        };
-
-        let execute = function (callback, args, name) {
-            testLogin();
-
-            let deferred = $.Deferred();
-
-            if (!session.isValid(deferred)) {
-                createUserSession(this, callback, args);
-            } else {
-                this.renderHeaderAndFooter();
-                if (callback) {
-                    callback.apply(this, args);
-                }
-            }
-        };
 
         let getInvalidActiveFilters = function () {
             const session = JSON.parse(sessionStorage.getItem("session"));
@@ -167,9 +102,6 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
                 "picsureui(/)": displayLandingPage,
             },
             defaultAction: displayLandingPage,
-            execute: function (callback, args, name) {
-                execute.call(this, callback, args, name);
-            }
         };
     }
 );
