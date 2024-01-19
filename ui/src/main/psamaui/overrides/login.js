@@ -2,28 +2,42 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
         'util/notification', 'common/session'],
     function (settings, notAuthorizedTemplate, HBS,
               notification, session) {
+        function generateRandomState() {
+            const randomPart = Math.random().toString(36).substring(2, 15);
+            const timePart = new Date().getTime().toString(36);
+            return randomPart + timePart;
+        }
+
         function redirectToProvider() {
-            // We don't have a code, so we need to redirect the user to the login page
-            window.location.href = settings.idp_provider_uri + "/user/oauth2/authorize" +
+            const state = generateRandomState();
+            sessionStorage.setItem('oauthState', state);
+            const redirectUri = encodeURIComponent(window.location.protocol +
+                "//" + window.location.hostname +
+                (window.location.port ? ":" + window.location.port : "") +
+                "/psamaui/login");
+            const authUrl = "https://" + settings.idp_provider_uri +
+                "/oauth2/v1/authorize" +
                 "?response_type=code" +
                 "&scope=openid" +
-                "&client_id=" + settings.client_id +
-                "&redirect_uri=" + window.location.protocol
-                + "//" + window.location.hostname
-                + (window.location.port ? ":" + window.location.port : "")
-                + "/picsureui/login/";
+                "&client_id=" + encodeURIComponent(settings.client_id) +
+                "&redirect_uri=" + redirectUri +
+                "&state=" + encodeURIComponent(state);
+
+            console.log("Redirecting to:", authUrl); // Debugging line
+            // redirect the user to the authorization endpoint
+            window.location.href = authUrl;
         }
 
         let doLoginFlow = function () {
-            // We will show the loading message if it is defined
-
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
+            let state = url.searchParams.get("state");
+            let storedState = sessionStorage.getItem('oauthState');
 
-            if (code) {
+            if (code && state === storedState) {
+                // Code and state are valid, proceed with authentication
                 $('#main-content').html("Authentication is successful. Processing UserProfile information...");
 
-                // We have a code, so we can authenticate the user
                 $.ajax({
                     url: '/psama/okta/authentication',
                     type: 'post',
@@ -33,15 +47,18 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                     contentType: 'application/json',
                     success: session.sessionInit,
                     error: handleAuthenticationError
-                })
-
-            } else {
+                });
+            } else if (!code) {
+                // No code, redirect to provider
                 redirectToProvider();
+            } else {
+                // Invalid state, handle authentication error
+                handleAuthenticationError("Invalid state parameter. Possible CSRF attack detected.");
             }
         };
 
-        let handleAuthenticationError = function (data) {
-            notification.showFailureMessage("Failed to authenticate with provider. Try again or contact administrator if error persists.")
+        let handleAuthenticationError = function (message) {
+            notification.showFailureMessage(message || "Failed to authenticate with provider. Try again or contact administrator if error persists.");
             history.pushState({}, "", sessionStorage.not_authorized_url ? sessionStorage.not_authorized_url : "/psamaui/not_authorized?redirection_url=/picsureui");
         };
 
