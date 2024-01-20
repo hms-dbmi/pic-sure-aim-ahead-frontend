@@ -40,12 +40,14 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
 
                 $.ajax({
                     url: '/psama/okta/authentication',
-                    type: 'post',
+                    type: 'POST',
                     data: JSON.stringify({
                         code: code
                     }),
                     contentType: 'application/json',
-                    success: session.sessionInit,
+                    success: function (data) {
+                        session.sessionInit(data);
+                    },
                     error: handleAuthenticationError
                 });
             } else if (!code) {
