@@ -16,7 +16,7 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                 (window.location.port ? ":" + window.location.port : "") +
                 "/psamaui/login");
             const authUrl = "https://" + settings.idp_provider_uri +
-                "/oauth2/v1/authorize" +
+                "/oauth2/default/v1/authorize" +
                 "?response_type=code" +
                 "&scope=openid" +
                 "&client_id=" + encodeURIComponent(settings.client_id) +
