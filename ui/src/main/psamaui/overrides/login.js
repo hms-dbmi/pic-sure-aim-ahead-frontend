@@ -47,6 +47,7 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                     contentType: 'application/json',
                     success: function (data) {
                         session.sessionInit(data);
+                        window.location.href = "/picsureui";
                     },
                     error: handleAuthenticationError
                 });
@@ -55,12 +56,13 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                 redirectToProvider();
             } else {
                 // Invalid state, handle authentication error
-                handleAuthenticationError();
+                handleAuthenticationError("Invalid state parameter. Possible CSRF attack detected.");
             }
         };
 
-        let handleAuthenticationError = function () {
-            window.location.replace(settings.swb_login_url ? settings.swb_login_url : "/psamaui/not_authorized?redirection_url=/picsureui");
+        let handleAuthenticationError = function (message) {
+            notification.showFailureMessage(message || "Failed to authenticate with provider. Try again or contact administrator if error persists.");
+            history.pushState({}, "", sessionStorage.not_authorized_url ? sessionStorage.not_authorized_url : "/psamaui/not_authorized?redirection_url=/picsureui");
         };
 
         return {
