@@ -18,6 +18,7 @@ define(["picSure/tokenFunctions"],
                 currentSession.username = meResponse[0].email;
 
                 sessionStorage.setItem("session", JSON.stringify(currentSession));
+                window.location = '/picsureui/';
             },
             handleNotAuthorizedResponse: function () {
                 try {

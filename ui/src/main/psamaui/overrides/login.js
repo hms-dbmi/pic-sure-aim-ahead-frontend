@@ -45,12 +45,7 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                         code: code
                     }),
                     contentType: 'application/json',
-                    success: function (data) {
-                        session.sessionInit(data);
-                        window.location.replace("/picsureui");
-                        // Just in case the redirect doesn't work for some reason. This should never happen.
-                        location.reload();
-                    },
+                    success: session.sessionInit,
                     error: handleAuthenticationError
                 });
             } else if (!code) {
