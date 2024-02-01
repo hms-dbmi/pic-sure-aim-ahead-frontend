@@ -160,13 +160,12 @@
         <a id="api-btn" data-href="/picsureui/api" class="header-navigation header-btn authenticated-visible" href="#" tabindex="-1" title="API" aria-haspopup="true" aria-label="API">API</a>
         <ul id="help-menu-list" class="nav-dropdown-menu" tabindex="-1">
             {{#if pdfLink}}
-                <li id="user-guide-option" class="dropdown"
-                    aria-label="User Guide, clicking here will open a link in a new tab"><a href="{{{pdfLink}}}">User
+                <li id="user-guide-option" class="dropdown"><a aria-label='User Guide, this link will open a new browser tab' target='_blank' href="{{{pdfLink}}}">User
                     Guide</a></li>{{/if}}
             {{#if helpLink}}
                 <li id="contact-us-option" class="dropdown"
-                    aria-label="Contact Us link, clicking here will open a link in a new tab"><a href="{{{helpLink}}}">Contact
-                    Us</a>
+                    aria-label="Contact Us link, clicking here will open a link in a new tab"><a href="https://helpdesk.aim-ahead.net/agent/listing/my">Contact
+                    Us: Help Desk</a>
                 </li>
             {{/if}}
             <li id="terms-of-use" class="dropdown"
