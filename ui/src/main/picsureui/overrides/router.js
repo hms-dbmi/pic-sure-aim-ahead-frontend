@@ -30,6 +30,16 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
             landing.render();
         };
 
+        let displayAPI = function () {
+            $(".header-btn.active").removeClass('active');
+            $(".header-btn[data-href='/picsureui/api']").addClass('active');
+            $('#main-content').empty();
+
+            var apiPanelView = new ApiPanelView({});
+            $('#main-content').append(apiPanelView.$el);
+            apiPanelView.render();
+        };
+
         return {
             routes: {
                 /**
@@ -98,7 +108,7 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
 
                     toolSuiteView.render();
                 },
-                "picsureui/api": undefined,
+                "picsureui/api": displayAPI,
                 "picsureui(/)": displayLandingPage,
             },
             defaultAction: displayLandingPage,
