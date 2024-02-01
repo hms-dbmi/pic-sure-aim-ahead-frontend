@@ -1,4 +1,4 @@
-define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handlebars",
+define(["picSure/settings", "text!login/not_authorized.hbs", "handlebars",
         'util/notification', 'common/session'],
     function (settings, notAuthorizedTemplate, HBS,
               notification, session) {
@@ -58,8 +58,9 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
         };
 
         let handleAuthenticationError = function (message) {
+            console.debug("Failed to authenticate: ", message);
             notification.showFailureMessage(message || "Failed to authenticate with provider. Try again or contact administrator if error persists.");
-            history.pushState({}, "", sessionStorage.not_authorized_url ? sessionStorage.not_authorized_url : "/psamaui/not_authorized?redirection_url=/picsureui");
+            history.pushState({}, "", sessionStorage.not_authorized_url ? sessionStorage.not_authorized_url : "/psamaui/not_authorized");
         };
 
         return {
@@ -67,7 +68,10 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
             client_id: settings.client_id,
             postRender: undefined,
             displayNotAuthorized: function () {
-                $('#main-content').html(HBS.compile(notAuthorizedTemplate)({helpLink: settings.helpLink}));
+                $('#main-content').html(HBS.compile(notAuthorizedTemplate)({
+                    helpLink: settings.helpLink,
+                    loginLink: settings.loginLink
+                }));
             },
             showLoginPage: doLoginFlow,
         };
