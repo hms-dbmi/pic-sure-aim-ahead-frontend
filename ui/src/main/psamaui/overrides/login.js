@@ -15,17 +15,14 @@ define(["picSure/settings", "text!login/not_authorized.hbs", "handlebars",
                 "//" + window.location.hostname +
                 (window.location.port ? ":" + window.location.port : "") +
                 "/psamaui/login");
-            const authUrl = "https://" + settings.idp_provider_uri +
+            // redirect the user to the authorization endpoint
+            window.location.href = "https://" + settings.idp_provider_uri +
                 "/oauth2/default/v1/authorize" +
                 "?response_type=code" +
                 "&scope=openid" +
                 "&client_id=" + encodeURIComponent(settings.client_id) +
                 "&redirect_uri=" + redirectUri +
                 "&state=" + encodeURIComponent(state);
-
-            console.log("Redirecting to:", authUrl); // Debugging line
-            // redirect the user to the authorization endpoint
-            window.location.href = authUrl;
         }
 
         let doLoginFlow = function () {
