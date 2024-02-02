@@ -128,46 +128,56 @@
 </style>
 <header id="top-header" class="space-out">
     <div id="header-open-access">
-        <a class="header-navigation" data-href="/picsureui/" href="#" tabindex="-1">
+        <a class="header-navigation" data-href="/picsureui/" href="/picsureui" tabindex="-1">
             <img class="logo-img" src="{{logoPath}}" title="BioData Catalyst Powered by PIC-SURE" alt="">
         </a>
-        <i class="fa-solid fa-lock-open"></i>Open Access
     </div>
     <nav id="header-tabs" class="nav-menu" role="navigation"
          aria-label="Main Navigation. You are on the main navigation of Pic-sure. Please use the arrow keys to navigate through the tabs. Use Enter or space to select the tab."
          tabindex="0">
-        <a class="header-btn authorized-access-visible header-navigation" data-href="/picsureui/queryBuilder" href="#" id="query-builder-btn" tabindex="-1" title="Authorized Access" aria-label="Authorized Access">Authorized Access</a>
-        <a class="header-btn header-navigation open-access-btn" id="open-access-btn"
-           tabindex="-1" title="Go to Open PIC-SURE"
-           href="https://openpicsure.biodatacatalyst.nhlbi.nih.gov/picsureui/"
-           aria-label="Go to Open Open PIC-SURE">Go to Open<br/> PIC-SURE</a>
+        {{#contains privileges "SUPER_ADMIN"}}
+            <button id="super-admin-dropdown-toggle" class="dropdown-toggle nav-dropdown header-btn long-name"
+                    aria-expanded="false" tabindex="-1" title="Super Admin Console"
+                    aria-label="Super Admin Console Dropdown" aria-controls="super-admin-console-menu-list">
+                <span>Super Admin Console</span><i class="fa fa-caret-down" aria-hidden="true"></i>
+            </button>
+            <ul id="super-admin-console-menu-list" class="nav-dropdown-menu" role="menu" tabindex="-1">
+                <li class="dropdown"><a id="appMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/applicationManagement" href="#">Applications</a></li>
+                <li class="dropdown"><a id="connMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/connectionManagement">Connections</a></li>
+                <li class="dropdown"><a id="privMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/privilegeManagement">Privileges</a></li>
+                <li class="dropdown"><a id="roleMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/roleManagement">Roles</a></li>
+            </ul>
+        {{/contains}}
+        {{#contains privileges 'ADMIN'}}
+            <a class="header-btn header-navigation" id="admin-btn" data-href="/psamaui/userManagement" href="#"
+               tabindex="-1">Users</a>
+        {{/contains}}
+        <a class="header-btn authorized-access-visible header-navigation authenticated-visible"
+           data-href="/picsureui/queryBuilder" href="#"
+           id="query-builder-btn" tabindex="-1" title="Authorized Access" aria-label="Authorized Access">Explorer</a>
+        <a id="api-btn" data-href="/picsureui/api" class="header-navigation header-btn authenticated-visible" href="#"
+           tabindex="-1" title="API" aria-haspopup="true" aria-label="API">API</a>
         <button data-intro="#help-header-button" data-sequence="14"
                 class="dropdown-toggle nav-dropdown header-btn authenticated-visible" aria-expanded="false"
                 id="help-dropdown-toggle" tabindex="-1" title="Help" aria-label="Help dropwdown"
                 aria-controls="help-menu-list">
             Help <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
-        <ul id="help-menu-list" class="nav-dropdown-menu" tabindex="-1">
-            {{#if videoLink}}
-                <li id="video-demo-option" class="dropdown"
-                    aria-label="Video Demonstration, clicking here will open a link in a new tab"><a
-                        href="{{{videoLink}}}">Video Demonstration</a></li>{{/if}}
+        <ul id="help-menu-list" class="nav-dropdown-menu authenticated-visible" tabindex="-1">
             {{#if pdfLink}}
-                <li id="user-guide-option" class="dropdown"
-                    aria-label="User Guide, clicking here will open a link in a new tab"><a href="{{{pdfLink}}}">User
+                <li id="user-guide-option" class="dropdown"><a
+                        aria-label='User Guide, this link will open a new browser tab' target='_blank'
+                        href="{{{pdfLink}}}">User
                     Guide</a></li>{{/if}}
-            {{#if jupyterExampleLink}}
-                <li id="jupyter-examples-option" class="dropdown"
-                    aria-label="Jupyter Examples, clicking here will open a link  in a new tab"><a
-                        href="{{{jupyterExampleLink}}}">Jupyter Examples</a></li>{{/if}}
-            {{#if documentationLink}}
-                <li id="documentation-option" class="dropdown"
-                    aria-label="BDC Ecosystem Documentation, clicking here will open a link  in a new tab"><a
-                        href="{{{documentationLink}}}">BDC Ecosystem Documentation</a></li>{{/if}}
             {{#if helpLink}}
                 <li id="contact-us-option" class="dropdown"
-                    aria-label="Contact Us link, clicking here will open a link in a new tab"><a href="{{{helpLink}}}">Contact
-                    Us</a>
+                ><a aria-label="Contact Us link, clicking here will open a link in a new tab" target="_blank"
+                    href="https://helpdesk.aim-ahead.net/agent/listing/my">Contact
+                    Us: Help Desk</a>
                 </li>
             {{/if}}
             <li id="terms-of-use" class="dropdown"
