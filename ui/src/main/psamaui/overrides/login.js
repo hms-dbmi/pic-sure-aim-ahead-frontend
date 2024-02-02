@@ -29,6 +29,9 @@ define(["picSure/settings", "text!login/not_authorized.hbs", "handlebars",
         }
 
         let doLoginFlow = function () {
+            // hide top-header
+            $('#header-tabs').hide();
+
             let url = new URL(window.location.href);
             let code = url.searchParams.get("code");
             let state = url.searchParams.get("state");
@@ -45,7 +48,13 @@ define(["picSure/settings", "text!login/not_authorized.hbs", "handlebars",
                         code: code
                     }),
                     contentType: 'application/json',
-                    success: session.sessionInit,
+                    success: function (data) {
+                        session.sessionInit(data)
+                            .then(() => {
+                                // show top-header
+                                $('#header-tabs').show();
+                            });
+                    },
                     error: handleAuthenticationError
                 });
             } else if (!code) {

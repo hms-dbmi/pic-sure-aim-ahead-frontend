@@ -156,17 +156,18 @@
             <a class="header-btn header-navigation" id="admin-btn" data-href="/psamaui/userManagement" href="#"
                tabindex="-1">Users</a>
         {{/contains}}
-        <a class="header-btn authorized-access-visible header-navigation" data-href="/picsureui/queryBuilder" href="#"
+        <a class="header-btn authorized-access-visible header-navigation authenticated-visible"
+           data-href="/picsureui/queryBuilder" href="#"
            id="query-builder-btn" tabindex="-1" title="Authorized Access" aria-label="Authorized Access">Explorer</a>
+        <a id="api-btn" data-href="/picsureui/api" class="header-navigation header-btn authenticated-visible" href="#"
+           tabindex="-1" title="API" aria-haspopup="true" aria-label="API">API</a>
         <button data-intro="#help-header-button" data-sequence="14"
                 class="dropdown-toggle nav-dropdown header-btn authenticated-visible" aria-expanded="false"
                 id="help-dropdown-toggle" tabindex="-1" title="Help" aria-label="Help dropwdown"
                 aria-controls="help-menu-list">
             Help <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
-        <a id="api-btn" data-href="/picsureui/api" class="header-navigation header-btn authenticated-visible" href="#"
-           tabindex="-1" title="API" aria-haspopup="true" aria-label="API">API</a>
-        <ul id="help-menu-list" class="nav-dropdown-menu" tabindex="-1">
+        <ul id="help-menu-list" class="nav-dropdown-menu authenticated-visible" tabindex="-1">
             {{#if pdfLink}}
                 <li id="user-guide-option" class="dropdown"><a
                         aria-label='User Guide, this link will open a new browser tab' target='_blank'
