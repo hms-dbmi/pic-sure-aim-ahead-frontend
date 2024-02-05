@@ -1,4 +1,4 @@
-define(["header/goToAuthorized", "header/termsOfService", "common/modal"], function (goToAuthorized, termsOfService, modal) {
+define(["header/termsOfService", "common/modal"], function (termsOfService, modal) {
     return {
         /*
          * The path to a logo image incase you don't want the default PrecisionLink one.
