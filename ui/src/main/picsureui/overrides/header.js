@@ -14,7 +14,7 @@ define(["header/termsOfService", "common/modal"], function (termsOfService, moda
             $(document).on('click', '#open-tos-modal', function (event) {
                 modal.displayModal(
                     new termsOfService(),
-                    "NHLBI BioData Catalyst® (BDC) Powered by Open PIC-SURE Terms of Use",
+                    "PIC-SURE Terms of Use",
                     function () {
                         // Focus the help dropdown menu
                         $("#help-dropdown-toggle").focus();
