@@ -1,4 +1,4 @@
-define(["picSure/settings", "text!login/not_authorized.hbs", "handlebars",
+define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handlebars",
         'util/notification', 'common/session'],
     function (settings, notAuthorizedTemplate, HBS,
               notification, session) {
