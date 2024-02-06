@@ -13,7 +13,15 @@ define(["handlebars",
              */
             render: function () {
                 new Middleware();
-                let redirect = new redirectModal();
+
+                const aimAheadMessage = [
+                    "This external website will be opened as a new tab in your browser.",
+                    "Are you sure you want to leave PIC-SURE?"
+                ];
+
+                const aimAheadHeaderMessage = "Leaving PIC-SURE";
+
+                let redirect = new redirectModal({message: aimAheadMessage});
 
                 // Using .off() to prevent multiple event handlers from being attached
                 $(document).off('click', 'a[target="_blank"]').on('click', 'a[target="_blank"]', function (event) {
