@@ -90,7 +90,8 @@ define(["backbone", "handlebars", "studyAccess/studyAccess", "picSure/settings",
                     const searchView = new SearchView({
                         queryTemplate: JSON.parse(parsedSess.queryTemplate),
                         queryScopes: parsedSess.queryScopes,
-                        el: $('#filter-list')
+                        el: $('#filter-list'),
+                        tourSearchTerm: "race",
                     });
 
                     $('#studies-list-panel').remove();
