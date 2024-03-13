@@ -1,0 +1,159 @@
+<style>
+    .focused-variable {
+        border: solid;
+        border-width: -4px !important;
+        border-color: #a73039 !important;
+    }
+
+    table#exportData {
+        width: 100% !important;
+        margin: 0 auto;
+        clear: both;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    div#package-datatable-table {
+        margin: 50px;
+        margin-top: 20px;
+    }
+
+    .package-data-modal > div {
+        margin: 7px;
+    }
+
+    .package-header {
+        display: inline-flex;
+        justify-content: space-between;
+        width: 100%;
+        font-size: large;
+        margin-top: 1.5vh;
+        margin-bottom: 1.5vh;
+    }
+
+    .right-container {
+        display: flex;
+        flex-direction: column;
+        margin-right: 10px;
+        text-align: right;
+    }
+
+    .package-summary-data {
+        display: block;
+    }
+
+    .package-query-container, .package-buttons-container {
+        display: inline-flex;
+        text-align: right;
+        justify-content: end;
+    }
+
+    .package-button {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3px;
+        margin-left: 3px;
+        width: 12em;
+        font-size: 1em;
+        height: fit-content;
+    }
+
+    .package-button.disabled {
+        background-color: var(--catalyst-blue);
+        color: white;
+    }
+
+    #package-query-id {
+        width: fit-content;
+        padding: 6px 4px;
+        border: 1px solid black;
+        border-radius: 5px;
+        align-items: center;
+        height: fit-content;
+    }
+
+    #package-copy-query-button {
+        position: relative;
+        font-size: 1em;
+    }
+
+    #package-download-button {
+        background-color: var(--catalyst-blue);
+        color: white;
+    }
+
+    #package-download-label {
+        font-family: 'Nunito Sans', sans-serif;
+        font-weight: 400;
+        padding-left: 3px;
+    }
+
+    #package-download-icon {
+        padding-top: .2em;
+    }
+
+    .top-button-row {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    #query-id-label {
+        padding-top: 0.3em;
+        padding-right: 0.3em;
+    }
+
+    #package-spinner {
+        margin: 5px;
+    }
+
+</style>
+<div class="package-data-modal">
+    <div class="package-header">
+        <div class="left-container">
+            <div class="package-summary-data" id="package-participants">
+                <span id="package-participants-value">xxx</span>
+                <span id="package-participants-label">Participants</span>
+            </div>
+            <div class="package-summary-data" id="package-variables">
+                <span id="package-variables-value">xxx</span>
+                <span id="package-variables-label">Variables</span>
+            </div>
+            <div class="package-summary-data" id="package-est-data">
+                <span id="package-est-data-value">xxx</span>
+                <span id="package-est-data-label">Estimated Data Points</span>
+            </div>
+            <div class="package-summary-data" id="package-status">
+                <span id="package-status-label">Status</span>
+                <span id="package-status-value">xxx</span>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="top-button-row">
+                <a id="package-download-button" aria-label="Download Button, opens a confirmation modal."
+                   class="btn btn-primary download-button package-button" title="Download Data" download='data.csv'>
+                    <i class="fa fa-download" id="package-download-icon" aria-hidden="true"></i>
+                    <span id='package-download-label'>Download</span>
+                </a>
+                <button id="package-package-button" class="btn btn-primary package-button" tabindex="1099998">Package
+                    Data
+                </button>
+                <div id="package-spinner"></div>
+            </div>
+            <div class="package-query-container">
+                <label id="query-id-label" for="package-query-id">Dataset Id:</label>
+                <div id="package-query-id">xxx</div>
+                <button id="package-copy-query-button" class="btn btn-primary package-button" tabindex="1099999">Copy
+                    Dataset ID
+                </button>
+                <a id="save-named-dataset-btn" aria-label="Saves the dataset for access later."
+                   class="btn btn-primary download-button package-button" title="Save Dataset ID">
+                    Save Dataset ID
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="package-main">
+        <div class="package-datatable-label"></div>
+        <div id="package-datatable-table"></div>
+    </div>
+</div>

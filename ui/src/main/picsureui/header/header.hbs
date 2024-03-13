@@ -1,0 +1,189 @@
+<style>
+    #help-dropdown {
+        padding: 0;
+    }
+
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 32px 35px;
+        cursor: pointer;
+        background-color: var(--background-grey);
+        border: none;
+    }
+
+    .dropdown-toggle i {
+        margin-left: 8px;
+    }
+
+    .selected {
+        border: 4px solid var(--nhlbi-red);
+    }
+
+    .nav-dropdown-menu.open {
+        display: block;
+    }
+
+    .nav-dropdown-menu {
+        list-style-type: none;
+        color: rgb(51, 51, 51);
+        position: absolute;
+        top: 0%;
+        z-index: 1000;
+        float: left;
+        min-width: 160px;
+        padding: 0;
+        margin: 2px 0 0;
+        font-size: 14px;
+        text-align: left;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 4px;
+        box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+        display: none;
+    }
+
+    .nav-dropdown-menu > li > button,
+    .nav-dropdown-menu > li > a {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .nav-dropdown-menu > li > button:hover,
+    .nav-dropdown-menu > li > button:focus,
+    .nav-dropdown-menu > li > a:hover,
+    .nav-dropdown-menu > li > a:focus {
+        text-decoration: none;
+        color: #262626;
+        background-color: #f5f5f5;
+    }
+
+    /* Format the button so it looks like the a elements in the drop down list */
+    .nav-dropdown-menu > li > button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+    }
+
+    #top-header {
+        display: flex;
+        flex-direction: row;
+        background-color: #f4f4f6;
+        padding: 10px;
+    }
+
+    #top-header img {
+        padding-top: 0px;
+    }
+
+    #top-header .nav-menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        margin-left: 10px;
+    }
+
+    @media only screen and (max-width: 1470px) {
+        #top-header img {
+            padding-top: 0px;
+            max-width: 500px;
+            height: fit-content;
+        }
+    }
+
+    @media only screen and (max-width: 990px) {
+        #top-header {
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f6;
+            padding: 10px;
+        }
+    }
+
+    #header-open-access {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        font-size: 1.5em;
+        color: grey;
+    }
+
+    #header-open-access i {
+        margin-right: .25em;
+        margin-left: .25em;
+        font-size: 1.625em;
+        color: grey;
+    }
+
+</style>
+<header id="top-header" class="space-out">
+    <div id="header-open-access">
+        <a class="header-navigation" data-href="/picsureui/" href="/picsureui" tabindex="-1">
+            <img class="logo-img" src="{{logoPath}}" title="AIM-AHEAD" alt="">
+        </a>
+    </div>
+    <nav id="header-tabs" class="nav-menu" role="navigation"
+         aria-label="Main Navigation. You are on the main navigation of Pic-sure. Please use the arrow keys to navigate through the tabs. Use Enter or space to select the tab."
+         tabindex="0">
+        {{#contains privileges "SUPER_ADMIN"}}
+            <button id="super-admin-dropdown-toggle" class="dropdown-toggle nav-dropdown header-btn long-name"
+                    aria-expanded="false" tabindex="-1" title="Super Admin Console"
+                    aria-label="Super Admin Console Dropdown" aria-controls="super-admin-console-menu-list">
+                <span>Super Admin Console</span><i class="fa fa-caret-down" aria-hidden="true"></i>
+            </button>
+            <ul id="super-admin-console-menu-list" class="nav-dropdown-menu" role="menu" tabindex="-1">
+                <li class="dropdown"><a id="appMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/applicationManagement" href="#">Applications</a></li>
+                <li class="dropdown"><a id="connMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/connectionManagement">Connections</a></li>
+                <li class="dropdown"><a id="privMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/privilegeManagement">Privileges</a></li>
+                <li class="dropdown"><a id="roleMgmt-super-admin" class="header-navigation"
+                                        data-href="/psamaui/roleManagement">Roles</a></li>
+            </ul>
+        {{/contains}}
+        {{#contains privileges 'ADMIN'}}
+            <a class="header-btn header-navigation" id="admin-btn" data-href="/psamaui/userManagement" href="#"
+               tabindex="-1">Users</a>
+        {{/contains}}
+        <a class="header-btn authorized-access-visible header-navigation authenticated-visible"
+           data-href="/picsureui/queryBuilder" href="#"
+           id="query-builder-btn" tabindex="-1" title="Authorized Access" aria-label="Authorized Access">Explorer</a>
+        <a id="api-btn" data-href="/picsureui/api" class="header-navigation header-btn authenticated-visible" href="#"
+           tabindex="-1" title="API" aria-haspopup="true" aria-label="API">API</a>
+        <button data-intro="#help-header-button" data-sequence="14"
+                class="dropdown-toggle nav-dropdown header-btn authenticated-visible" aria-expanded="false"
+                id="help-dropdown-toggle" tabindex="-1" title="Help" aria-label="Help dropwdown"
+                aria-controls="help-menu-list">
+            Help <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <ul id="help-menu-list" class="nav-dropdown-menu authenticated-visible" tabindex="-1">
+            {{#if pdfLink}}
+                <li id="user-guide-option" class="dropdown"><a
+                        aria-label='User Guide, this link will open a new browser tab' target='_blank'
+                        href="{{{pdfLink}}}">User
+                    Guide</a></li>{{/if}}
+            <li id="contact-us-option" class="dropdown"
+            ><a aria-label="Contact Us link, clicking here will open a link in a new tab" target="_blank"
+                href="https://helpdesk.aim-ahead.net/agent/listing/my">Contact
+                Us: Help Desk</a>
+            </li>
+            <li id="terms-of-use" class="dropdown"
+                aria-label="Terms of Use, clicking here will open a link in a new tab">
+                <button id="open-tos-modal">Terms of Use</button>
+            </li>
+        </ul>
+        <a href="#" id="logout-btn" class="header-btn authenticated-visible" tabindex="-1" title="Log Out"
+           aria-label="Log Out">Log Out</a>
+    </nav>
+</header>

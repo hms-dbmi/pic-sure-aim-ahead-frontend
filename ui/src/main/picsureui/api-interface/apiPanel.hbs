@@ -1,0 +1,86 @@
+<style>
+    #intro-section {
+        margin: 0 auto;
+        min-width: 800px;
+        width: fit-content;
+    }
+
+    .title {
+        font-size: 28px;
+        margin: 0;
+    }
+
+    .sub-title {
+        font-size: 16px;
+        margin: 0;
+    }
+
+    #getting-start-examples > a,
+    #getting-start-examples > button {
+        margin: 5px;
+    }
+
+    #about-section,
+    #get-started-section,
+    #dataset-management-section {
+        margin: 30px 15px 0 15px;
+        padding: 8px 0;
+        min-width: 1200px;
+    }
+
+</style>
+<div class="panel panel-outline" id="intro-section">
+    <div class="panel-heading no-border center-panel">
+        <div class="access-title">
+            <h3>PIC-SURE Application Programming Interface (API)</h3>
+        </div>
+    </div>
+    <div class="panel-body" style="display: flex; margin: 0 auto 10px auto">
+        <ul class="plain-list">
+            <li>
+                <i class="fa-solid fa-laptop-code" aria-hidden="true"></i>
+                <span>Search and query the studies in PIC-SURE using code, available in python or R</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                <span>Tutorials and example code can be accessed via Jupyter notebooks or RStudio</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                <span>PIC-SURE API is open source and licensed under Apache License 2.0</span>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="panel panel-outline" id="get-started-section">
+    <div class="panel-heading no-border">
+        <h2 class="title">Getting Started</h2>
+        <div class="sub-title">
+            <p>To use the PIC-SURE API, copy your personalized access token below.</p>
+            <p>Paste the token into a text file in your working directory and save as "token.txt".</p>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id="user-profile" style="margin: 0 10%; width: 80%">
+
+        </div>
+        <h2 class="title">PIC-SURE API Examples</h2>
+        <div class="sub-title">
+            Access example code on the public GitHub repository.
+        </div>
+        <div style="margin: 0 auto; width: max-content;" id="getting-start-examples">
+            <a class="btn btn-primary btn-lg"
+               href="https://github.com/hms-dbmi/Access-to-Data-and-Compute-using-Service-Workbench"
+               aria-label="Clicking here will take you to the given link in another tab." target="_blank">
+                Public GitHub Repository
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="panel panel-outline"  id="dataset-management-section">
+    <div class="panel-heading no-border">
+        <h3 class="title">Dataset ID Management</h3>
+        <div class="panel-body" id="dataset-management-box"></div>
+    </div>
+</div>
