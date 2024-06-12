@@ -39,7 +39,7 @@ define(["picSure/settings", "text!psamaui/overrides/not_authorized.hbs", "handle
                 $('#main-content').html("Authentication is successful. Processing UserProfile information...");
 
                 $.ajax({
-                    url: '/psama/okta/authentication',
+                    url: '/psama/authentication/aimAheadOkta',
                     type: 'POST',
                     data: JSON.stringify({
                         code: code
